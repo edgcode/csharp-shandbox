@@ -23,7 +23,9 @@ namespace RevitTemplate
         private readonly EventHandlerWithStringArg _mExternalMethodStringArg;
         private readonly EventHandlerWithWpfArg _mExternalMethodWpfArg;
 
-        
+        private ChromiumWebBrowser _webBrowser;
+
+
 
         public Ui(UIApplication uiApp, EventHandlerWithStringArg evExternalMethodStringArg,
             EventHandlerWithWpfArg eExternalMethodWpfArg)
@@ -38,6 +40,7 @@ namespace RevitTemplate
             _mExternalMethodStringArg = evExternalMethodStringArg;
             _mExternalMethodWpfArg = eExternalMethodWpfArg;
 
+            _webBrowser = Browser;
             Browser.Address = "https://github.com";
             // UI Html file
             Browser.Address = @"D:\Users\egreen\source\repos\cefSharpUI\cefSharpUI\test.html";
@@ -50,9 +53,11 @@ namespace RevitTemplate
         public class CallbackObjectForJs
         {
             private readonly Document _doc;
+            private ChromiumWebBrowser _browser;
             public CallbackObjectForJs(Ui ui)
             {
                 _doc = ui._uiDoc.Document;
+                _browser = ui._webBrowser;
             }
 
             public void showMessage(string msg)
@@ -72,6 +77,9 @@ namespace RevitTemplate
                 // format the message to show the number of walls in the project
                 string message = $"There are {walls.Count} Walls in the project";
                 MessageBox.Show(message);
+                // _browser.ExecuteScriptAsync("document.body.style.background='red';");
+                // _browser.ExecuteScriptAsync("document.getElementById('tb1').value ='"+message+"';");
+                _browser.ExecuteScriptAsync("updateTextbox('"+ message + "');");
             }
         }
 
